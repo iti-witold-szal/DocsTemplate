@@ -1,0 +1,1 @@
+This folder stores includes used in documentation articles.

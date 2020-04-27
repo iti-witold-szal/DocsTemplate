@@ -1,0 +1,41 @@
+trigger:
+ - Develop
+
+pool: Default
+
+steps:
+   
+- checkout: self
+  submodules: true
+  persistCredentials: true
+  clean: true
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      docfx docfx.json
+      if ($lastexitcode -ne 0){
+        throw ("Error generating document")
+      }
+    failOnStderr: true
+
+- task: CopyFiles@2
+  displayName: Copy artifacts to ArtifactStagingDirectory
+  inputs:
+    SourceFolder: '_site'
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+  
+- task: PublishPipelineArtifact@1
+  displayName: Publish artifacts
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)
+    artifactName: DocsSite
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'sandbox.docs.integro.pl_SSH'
+    sourceFolder: '$(Build.ArtifactStagingDirectory)'
+    targetFolder: ./content
+    contents: '**'
+    readyTimeout: '20000'

@@ -1,0 +1,3 @@
+[submodule "ProductSiteTemplate"]
+	path = ProductSiteTemplate
+	url = ../../../IntegroDocsTemplate/_git/ProductSiteTemplate
