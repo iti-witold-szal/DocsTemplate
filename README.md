@@ -1,0 +1,2 @@
+# DocsTemplate
+Application Docs template.
